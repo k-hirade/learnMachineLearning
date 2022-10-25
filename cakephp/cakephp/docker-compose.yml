@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+    cakephp:
+        container_name: beginner_cakephp
+        build:
+            context: ./
+        volumes:
+            # for dev (docker comnpose only)
+            - ./:/usr/share/nginx/html/cakephp
+        ports:
+            - "9000:9000"
+        # restart: always
+
+    nginx:
+        container_name: beginner_nginx
+        build:
+            context: ./container/nginx/
+        ports:
+            - 8080:80
+        volumes:
+            # for dev (docker comnpose only)
+            - ./:/usr/share/nginx/html/cakephp
+            - ./container/nginx/logs/:/var/log/nginx
+        # restart: always
+        links:
+            - cakephp
+            
+      mysql:
+        platform: linux/x86_64
+        
+      db:
+        platform: linux/x86_64 # M1チップ対応のため追記
+        image: mysql:5.7
+        container_name: app_db
